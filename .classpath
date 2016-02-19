@@ -6,6 +6,7 @@
 	<classpathentry kind="lib" path="lib3rd/jeep.jar"/>
 	<classpathentry kind="lib" path="lib3rd/metaxa.jar"/>
 	<classpathentry kind="lib" path="lib3rd/collections-generic-4.01.jar"/>
+	<classpathentry kind="lib" path="lib3rd/MitLware-java.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/MitLware-java"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
