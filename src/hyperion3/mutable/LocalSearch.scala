@@ -24,12 +24,12 @@ object LocalSearch {
     startTime: ReadWrite[Long]) : IteratedPerturb[S] =     
       apply(perturb, accept, isFinished, Option.apply(prefer), iterCount,startTime)
 
-  def randomSearchReturnLast[S](create: Create[S,scala.util.Random], 
+  def randomSearchReturnLast[S](create: Create[S], 
     isFinished: IsFinished[S], 
     iterCount: ReadWrite[Long],
     startTime: ReadWrite[Long],
     random: ReadWrite[Random]) : IteratedPerturb[S] =     
-      apply(Perturb.from(create,random.get), Accept.always[S], isFinished, Option.empty, iterCount,startTime)
+      apply(Perturb.from(create), Accept.always[S], isFinished, Option.empty, iterCount,startTime)
   
   /** @see "Essentials of Metaheuristics" 2nd Edition, Algorithm 9 */
 
@@ -65,7 +65,7 @@ object LocalSearch {
     tabuList: ReadWrite[CircularFifoBuffer[Set[Feature]]]
   ) : IteratedPerturb[S] = {
     
-    val accept : Accept[S] = hyperion3.mutable.accept.Tabu.strict(prefer, featureFn, tabuList) _ 
+    val accept : Accept[S] = hyperion3.mutable.accept.Tabu.strict(featureFn, tabuList) _ 
     returnBest(perturb, accept, isFinished, prefer, iterCount,startTime)
   }
   
@@ -119,8 +119,7 @@ object LocalSearch {
       incumbent = accept( incumbent, incoming )
 jeep.lang.Diag.println( "accepted: " + incumbent )
 
-      best = for( p <- prefer; bst <- best ) yield
-        if( p.prefer( bst, incumbent ) == Preference.PREFER_RIGHT ) incumbent else bst
+    best = for( p <- prefer; bst <- best ) yield p.prefer( bst, incumbent )
 
         jeep.lang.Diag.println( "pref: " + prefer.get.prefer( best.get, incumbent ) )
 

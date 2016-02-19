@@ -17,8 +17,8 @@ package object mutable {
     override def apply(x: S) : java.lang.Boolean = f(x)    
   }
 
-  implicit def liftLocality[S]( f: S => java.util.stream.Stream[S] ) : Locality[S] = new Locality[S] {
-    override def apply(x: S) : java.util.stream.Stream[S] = f(x)    
+  implicit def liftLocality[S]( f: S => java.util.List[S] ) : Locality[S] = new Locality[S] {
+    override def apply(x: S) : java.util.List[S] = f(x)    
   }
   
   implicit def liftMove[S]( f: ( S, java.util.stream.Stream[S] ) => java.util.Optional[S] ) : Move[S] = new Move[S] {
@@ -29,8 +29,8 @@ package object mutable {
     override def apply(incumbent: S) : S = f(incumbent )    
   }
   
-  implicit def liftPrefer[S]( f: Function2[S,S,Preference] ) : Prefer[S] = new Prefer[S] {
-    override def prefer(a: S, b: S) : Preference = f(a, b)    
+  implicit def liftPrefer[S]( f: Function2[S,S,S] ) : Prefer[S] = new Prefer[S] {
+    override def prefer(a: S, b: S) : S = f(a, b)    
   }
 
 }

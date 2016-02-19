@@ -93,10 +93,7 @@ object RandomRestartLocalSearch {
       var incoming = innerSearch( createState() )
       
       incumbent = accept( incumbent, incoming )
-      best = if( prefer.prefer( best, incumbent ) == Preference.PREFER_RIGHT ) 
-        incumbent 
-      else 
-        best
+      best = prefer.prefer( best, incumbent )
         
       finished = isFinishedOuter( incumbent )
       
