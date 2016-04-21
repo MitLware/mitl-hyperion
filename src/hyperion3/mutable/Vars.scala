@@ -6,8 +6,16 @@ trait ReadOnly[T] {
   implicit def get : T  
 }
 
+object ReadOnly {
+  def apply[T](x: T)(implicit factory: VariableFactory): ReadOnly[T] = factory.readOnly(x)   
+}
+
 trait ReadWrite[T] extends ReadOnly[T] {
   def set(x: T) : Unit
+}
+
+object ReadWrite {
+  def apply[T](x: T)(implicit factory: VariableFactory): ReadWrite[T] = factory.readWrite(x)   
 }
 
 trait VariableFactory {
