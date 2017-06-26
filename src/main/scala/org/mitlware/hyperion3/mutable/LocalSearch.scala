@@ -116,13 +116,13 @@ object LocalSearch {
 //jeep.lang.Diag.println( "incumbent: " + incumbent )
 //jeep.lang.Diag.println( "incoming: " + incoming )
       incumbent = accept( incumbent, incoming )
-jeep.lang.Diag.println( "accepted: " + incumbent )
+//jeep.lang.Diag.println( "accepted: " + incumbent )
 
     best = for( p <- prefer; bst <- best ) yield p.prefer( bst, incumbent )
 
-        jeep.lang.Diag.println( "pref: " + prefer.get.prefer( best.get, incumbent ) )
+  //      jeep.lang.Diag.println( "pref: " + prefer.get.prefer( best.get, incumbent ) )
 
-jeep.lang.Diag.println( "best: " + best )
+//jeep.lang.Diag.println( "best: " + best )
 
       finished = isFinished( incumbent )
       
