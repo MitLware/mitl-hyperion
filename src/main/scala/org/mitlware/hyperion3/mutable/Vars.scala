@@ -1,5 +1,4 @@
-package hyperion3.mutable
-
+package org.mitlware.hyperion3.mutable
 ///////////////////////////////////
 
 trait ReadOnly[T] {

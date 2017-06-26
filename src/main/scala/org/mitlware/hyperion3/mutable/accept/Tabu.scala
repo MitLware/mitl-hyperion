@@ -1,9 +1,6 @@
-package hyperion3.mutable.accept
+package org.mitlware.hyperion3.mutable.accept
 
-import org.mitlware._
-import org.mitlware.mutable._
-
-import hyperion3.mutable._
+import org.mitlware.hyperion3.mutable._
 
 import org.apache.commons.collections15.buffer.CircularFifoBuffer
 

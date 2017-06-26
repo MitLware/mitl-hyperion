@@ -1,8 +1,6 @@
-package hyperion3.immutable
+package org.mitlware.hyperion3.immutable
 
 // From: https://gist.github.com/pthariensflame/5054294
-
-package indexedState {
 
 object IState extends IStateMonadFuncs with IStateFuncs {
   def apply[I, O, A](run: I => (A, O)): IState[I, O, A] = new IState[I, O, A](run)
@@ -47,9 +45,9 @@ private[indexedState] sealed trait IStateFuncs { this: IState.type =>
 ///////////////////////////////////
 
 object example {
-  
+
   def someIntToCharFunction(x: Int): Char = ???
-  
+
   /**
    * Performs `someIntToCharFunction` on the input state, returning the old state.
    */
@@ -59,9 +57,7 @@ object example {
   } yield original
 }
 
-///////////////////////////////////
-
-} // package indexedState {
+/////////////////////////////////// // package indexedState {
 
 
 

@@ -1,5 +1,4 @@
-
-package hyperion3.mutable
+package org.mitlware.hyperion3.mutable
 
 import org.mitlware._
 import org.mitlware.mutable._
@@ -47,7 +46,7 @@ object LocalSearch {
     temperature: ReadWrite[Double], 
     random: ReadWrite[Random] )( implicit ev: V => Double ) : IteratedPerturb[S] = {
     
-    val accept = hyperion3.mutable.accept.MetropolisHastings( iterCount, 
+    val accept = org.mitlware.hyperion3.mutable.accept.MetropolisHastings( iterCount,
       random, temperature, eval, schedule )( ev ) 
     returnBest(perturb, accept, isFinished, prefer, iterCount,startTime)
   }
@@ -65,7 +64,7 @@ object LocalSearch {
     tabuList: ReadWrite[CircularFifoBuffer[Set[Feature]]]
   ) : IteratedPerturb[S] = {
     
-    val accept : Accept[S] = hyperion3.mutable.accept.Tabu.strict(featureFn, tabuList) _ 
+    val accept : Accept[S] = org.mitlware.hyperion3.mutable.accept.Tabu.strict(featureFn, tabuList) _
     returnBest(perturb, accept, isFinished, prefer, iterCount,startTime)
   }
   

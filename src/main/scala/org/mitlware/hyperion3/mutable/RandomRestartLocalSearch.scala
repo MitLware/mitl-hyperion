@@ -1,5 +1,4 @@
-
-package hyperion3.mutable
+package org.mitlware.hyperion3.mutable
 
 import org.mitlware._
 import org.mitlware.mutable._

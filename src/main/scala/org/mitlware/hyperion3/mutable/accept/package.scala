@@ -1,4 +1,4 @@
-package hyperion3.mutable
+package org.mitlware.hyperion3.mutable
 
 import scala.util.Random
 
