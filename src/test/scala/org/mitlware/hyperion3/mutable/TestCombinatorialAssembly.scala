@@ -7,7 +7,7 @@ import hyperion3.benchmarks.onemax.mutable._
 
 import hyperion3.mutable._
 
-import statelet.bitvector._
+import org.mitlware.solution.bitvector._
 
 import java.lang.{Double=>JDouble}
 // ^ java.lang.Double is Comparable, scala.lang.Double isn't

@@ -17,7 +17,7 @@ package object accept {
       
       val incumbentValue = eval(incumbent)      
       val incomingValue = eval(incoming)
-      val acceptIncoming = metaxa.temperature.MetropolisHastings.apply( 
+      val acceptIncoming = org.mitlware.support.temperature.MetropolisHastings.apply( 
         incomingValue, incumbentValue, 
         schedule.apply( temperature.get, iterCount.get ),
         eval.isMinimizing, random.get.self )

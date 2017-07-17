@@ -4,8 +4,8 @@ import org.mitlware.hyperion3.mutable._
 
 // import hyperion3.benchmarks.onemax.mutable._
 
-import statelet.bitvector._
-import problemos.bitvector._
+import org.mitlware.solution.bitvector._
+import org.mitlware.problem.bitvector._
 import org.mitlware.mutable._
 
 import java.util.Random

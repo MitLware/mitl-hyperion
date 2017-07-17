@@ -5,7 +5,7 @@ import org.mitlware.mutable._
 
 import hyperion3.mutable._
 
-import statelet.bitvector._
+import org.mitlware.solution.bitvector._
 
 import java.lang.{Double=>JDouble}
 

@@ -7,7 +7,7 @@ import hyperion3.mutable._
 
 import hyperion3.benchmarks.onemax.mutable._
 
-import statelet.bitvector._
+import org.mitlware.solution.bitvector._
 
 import java.lang.{Double=>JDouble}
 
@@ -63,7 +63,7 @@ final class TestOnemaxLocalSearch {
     val temperature = mkVar.readWrite(initialTemperature) 
     
     def schedule( temp: Double, iter: Long ) : Double = 
-      jeep.math.LinearInterpolation.apply( iter, 0, maxIter, initialTemperature, 0.0 )
+      org.mitlware.support.math.LinearInterpolation.apply( iter, 0, maxIter, initialTemperature, 0.0 )
     
     val search : IteratedPerturb[S] = LocalSearch.simulatedAnnealing( perturb, 
       isFinished, prefer, eval, schedule, iterCount, startTime, temperature, random )    
