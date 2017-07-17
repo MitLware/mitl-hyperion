@@ -63,7 +63,7 @@ final class TestOnemaxLocalSearch {
     val temperature = mkVar.readWrite(initialTemperature) 
     
     def schedule( temp: Double, iter: Long ) : Double = 
-      org.mitlware.support.math.LinearInterpolation.apply( iter, 0, maxIter, initialTemperature, 0.0 )
+      org.mitlware.support.math.LinearInterpolation.apply( iter, 0, maxIter + 1, initialTemperature, 0.0 )
     
     val search : IteratedPerturb[S] = LocalSearch.simulatedAnnealing( perturb, 
       isFinished, prefer, eval, schedule, iterCount, startTime, temperature, random )    
