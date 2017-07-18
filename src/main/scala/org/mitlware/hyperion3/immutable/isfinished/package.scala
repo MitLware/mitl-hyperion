@@ -1,18 +1,25 @@
-package org.mitlware.hyperion3.immutable.isfinished
+package org.mitlware.hyperion3.immutable
 
+import cats.data.State
+import monocle.Lens
 
-
-/*********
-import org.mitlware.immutable._
+///////////////////////////////////
 
 package object isfinished {
+  
+///////////////////////////////////
 
-  def maxIterations[S](maxIter: Long, numIterations: Mutable[Long]) : IsFinished[S,Workspace] = 
-    (x: S, env: Workspace) => {
-      val iter = numIterations.get(env) 
-      ( iter == maxIter,numIterations.set( iter + 1, env ))
-    }
+case class IterGreaterThanMaxIter[Env,Sol](
+  iter: Lens[Env,Iter],
+  maxIter: Lens[Env,MaxIter]) extends Condition[Env,Sol] {
+  
+  def apply(incumbent: Sol): State[Env,Boolean] = State[Env,Boolean] { env =>
+    (env, iter.get(env).asLong > maxIter.get(env).asLong )
+  }
 }
-*********/
+
+///////////////////////////////////
+
+} // package object isfinished {
 
 // End ///////////////////////////////////////////////////////////////
