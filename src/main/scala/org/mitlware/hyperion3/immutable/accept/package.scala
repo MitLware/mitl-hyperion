@@ -16,32 +16,40 @@ case class AcceptAlways[Env,Sol]() extends Accept[Env,Sol] {
   }
 }
 
-case class AcceptImproving[Env,Sol](isMinimizing: Boolean, evaluate: monocle.Lens[Env, Evaluate[Env,Sol,Double]]) extends Accept[Env,Sol] {
+case class AcceptImproving[Env,Sol,Value](
+  isMinimizing: Boolean, 
+  ordering: Ordering[Value], 
+  evaluate: Lens[Env, Evaluate[Env,Sol,Value]]) extends Accept[Env,Sol] {
+  
   override def apply(incumbent: Sol, incoming: Sol): State[Env,Sol] = for {
     env <- State.get[Env]
     incumbentValue <- evaluate.get(env).apply(incumbent);
     incomingValue <- evaluate.get(env).apply(incoming) 
   } yield { 
     if( isMinimizing ) { 
-      if( incomingValue < incumbentValue ) incoming else incumbent 
+      if( ordering.lt( incomingValue, incumbentValue ) ) incoming else incumbent      
     } 
     else { 
-      if( incomingValue > incumbentValue ) incoming else incumbent 
+      if( ordering.gt( incomingValue, incumbentValue ) ) incoming else incumbent      
     }
   } 
 }
 
-case class AcceptImprovingOrEqual[Env,Sol](isMinimizing: Boolean, evaluate: monocle.Lens[Env, Evaluate[Env,Sol,Double]]) extends Accept[Env,Sol] {
+case class AcceptImprovingOrEqual[Env,Sol,Value](
+  isMinimizing: Boolean, 
+  ordering: Ordering[Value],
+  evaluate: monocle.Lens[Env, Evaluate[Env,Sol,Value]]) extends Accept[Env,Sol] {
+  
   override def apply(incumbent: Sol, incoming: Sol): State[Env,Sol] = for {
     env <- State.get[Env]
     incumbentValue <- evaluate.get(env).apply(incumbent);
     incomingValue <- evaluate.get(env).apply(incoming) 
   } yield { 
     if( isMinimizing ) { 
-      if( incomingValue <= incumbentValue ) incoming else incumbent 
+      if( ordering.lteq( incomingValue, incumbentValue ) ) incoming else incumbent 
     } 
     else { 
-      if( incomingValue >= incumbentValue ) incoming else incumbent 
+      if( ordering.gteq( incomingValue, incumbentValue ) ) incoming else incumbent 
     }
   } 
 }

@@ -22,27 +22,39 @@ import java.io._
 import java.nio.charset.Charset
 import java.nio._
 import java.nio.file._
-import java.util._
 
 import org.junit.Assert._ 
 
 //////////////////////////////////////////////////////////////////////
 
-class TestTSP {
+class TestTSPEvalFull {
 
 	@Test
 	def testIteratedPerturbation: Unit = {
 		
-		def exhaustiveSearch(tsp: TSP.TSPLibInstance): ArrayForm =
-      (0 until tsp.numCities).toArray.permutations.map { a => new ArrayForm(a:_*) 
-        }.minBy { perm => TSP.tourLength(perm,tsp.getDistanceFn()) }      
+		val seed = 0xDEADBEEF
+	  val maxIter = 10000	  
 	  
-		val path = System.getProperty( "user.dir" ) + "/resources/" + "unitTest.tsp";		
+    ///////////////////////////////
+	  
+//		val path = System.getProperty( "user.dir" ) + "/resources/" + "unitTest.tsp";
+		val path = System.getProperty( "user.dir" ) + "/resources/" + "wi29.tsp";	  
 		val is = new FileInputStream( path );
 		val tsp = new TSP.TSPLibInstance( is );
-	  val optimalTour = exhaustiveSearch(tsp)
-	  val optimalTourLength = TSP.tourLength(optimalTour,tsp.getDistanceFn())
+
+//		def exhaustiveSearch(tsp: TSP.TSPLibInstance): ArrayForm =
+//      (0 until tsp.numCities).toArray.permutations.map { a => new ArrayForm(a:_*) 
+//        }.minBy { perm => TSP.tourLength(perm,tsp.getDistanceFn()) }
+		
+	  // val optimalTour = exhaustiveSearch(tsp)
+	  // val optimalTourLength = TSP.tourLength(optimalTour,tsp.getDistanceFn())
+    val OptimalTourLength = 27603 // for wi29.tsp		
 	  
+	  def relativeError(x: ArrayForm): Double = {
+	    require( x.size() == tsp.numCities() )
+	    (TSP.tourLength(x,tsp.getDistanceFn()) - OptimalTourLength)/OptimalTourLength
+    }
+    
     ///////////////////////////////		
 		
     case class MyEnv(iter: Iter, maxIter: MaxIter, rng: RNG, tourLength: Evaluate[MyEnv,ArrayForm,Double])
@@ -58,14 +70,20 @@ class TestTSP {
 	  val rngLens: Lens[MyEnv, RNG] = monocle.macros.GenLens[MyEnv] { _.rng }	  
 	  val tourLengthLens: Lens[MyEnv, Evaluate[MyEnv,ArrayForm,Double]] = monocle.macros.GenLens[MyEnv] { _.tourLength }
     
-    val perturb: Perturb[MyEnv,ArrayForm] = Permutation.RandomSwap(rngLens) 
-    val accept: Accept[MyEnv,ArrayForm] = AcceptImprovingOrEqual(isMinimizing=true, tourLengthLens)
+    val perturb: Perturb[MyEnv,ArrayForm] = 
+        org.mitlware.hyperion3.immutable.perturb.permutation.EvaluateFull.RandomSwap(rngLens)
+        
+    val accept: Accept[MyEnv,ArrayForm] = AcceptImprovingOrEqual(isMinimizing=true, 
+        scala.math.Ordering.Double, tourLengthLens)
     val isFinished: Condition[MyEnv,ArrayForm] = IterGreaterThanMaxIter(iterLens,maxIterLens)
 		
 	  val search = IteratedPerturbation(iterLens,perturb,accept,isFinished)
-	  val initialEnv = MyEnv(Iter(0),MaxIter(100),RNG(0xDEADBEEF), TourLength(tsp) )
+	  val initialEnv = MyEnv(Iter(0),MaxIter(maxIter),KnuthLCG64(seed), TourLength(tsp) )
 	  val (finalEnv,solution) = search( new ArrayForm( tsp.numCities() ) ).run( initialEnv ).value
-	  assertEquals( optimalTourLength, TSP.tourLength(solution,tsp.getDistanceFn()), 0.0 )
+	  
+	  Diag.println( relativeError(solution) )
+	  
+	  assertEquals( OptimalTourLength, TSP.tourLength(solution,tsp.getDistanceFn()), 0.0 )
 	}
 }
 

@@ -1,17 +1,12 @@
-package org.mitlware.hyperion3.benchmarks.onemax.mutable
+package org.mitlware.hyperion3.mutable
 
 import org.mitlware._
 import org.mitlware.mutable._
-
-import hyperion3.mutable._
-
+import org.mitlware.hyperion3.mutable._
 import org.mitlware.solution.bitvector._
-
 import java.lang.{Double=>JDouble}
-
 import org.junit._
 import org.junit.Assert._
-
 import scala.util.Random
 
 //////////////////////////////////////////////////////////////////////
