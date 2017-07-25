@@ -4,13 +4,15 @@ import cats.data.State
 import cats.implicits._
 import monocle.Lens
 
+import org.mitlware.Diag
+
 import org.mitlware.hyperion3.immutable._
 import org.mitlware.hyperion3.immutable.perturb._
 import org.mitlware.hyperion3.immutable.accept._
 import org.mitlware.hyperion3.immutable.isfinished._		
 
 import org.mitlware.support.lang.BadFormatException
-import org.mitlware.support.lang.Diag
+
 import org.mitlware.support.lang.UnsupportedFormatException
 import org.mitlware.support.math.Vec2
 
@@ -83,6 +85,8 @@ class TestTSPDeltaEval {
 	  val maxIterLens: Lens[MyEnv, MaxIter] = monocle.macros.GenLens[MyEnv] { _.maxIter }
 	  val rngLens: Lens[MyEnv, RNG] = monocle.macros.GenLens[MyEnv] { _.rng }	  
 	  val fitnessLens: Lens[MyEnv, Evaluate[MyEnv,MyArrayFormDelta,Double]] = monocle.macros.GenLens[MyEnv] { _.fitness }
+	  
+	  ///////////////////////////////
     
     val perturb: Perturb[MyEnv,MyArrayFormDelta] = 
        RandomSwap( rngLens, (index1, index2 ) => RandomSwapDeltaTSP(tsp, index1, index2))
@@ -94,7 +98,7 @@ class TestTSPDeltaEval {
 	  val fitness = TourLengthEval[MyEnv](tsp)
     val fitnessDelta = TourLengthDeltaEval[MyEnv](tsp)	  
 	  
-	  val initialS = ArrayFormDelta(new ArrayForm(tsp.numCities),fitness)
+	  val initialS = ArrayFormDelta(TSPHeuristics.bestNearestNeighbour(tsp),fitness)
 	  val initialEnv = MyEnv(Iter(0),MaxIter(maxIter),KnuthLCG64(seed), fitnessDelta )
 	  
 	  val searchS = for {
@@ -102,12 +106,17 @@ class TestTSPDeltaEval {
 	    result <- search( initial )
 	  } yield { result }
 	  
+    val startTime = System.currentTimeMillis()	  
 	  val (finalEnv,solution) = searchS.run( initialEnv ).value
-
+    val endTime = System.currentTimeMillis()
+    Diag.println( s"elapsed: ${(endTime - startTime)/1000.0}" )
+    
 	  Diag.println( relativeError(solution.updatedSol) )	  
 	  Diag.println( fitnessImpl(tsp)(solution.updatedSol) )	  
 	  
-	  assertEquals( OptimalTourLength, TSP.tourLength(solution.updatedSol,tsp.getDistanceFn()), 0.0 )
+    val Threshold = 0.1
+    val re = relativeError(solution.updatedSol)
+    assertTrue( s"expected value <= $Threshold, found $re", re <= Threshold )
   }
 }
 

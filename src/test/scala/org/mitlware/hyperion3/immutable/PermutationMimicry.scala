@@ -6,6 +6,8 @@ import cats.implicits._
 
 import monocle.Lens
 
+import org.mitlware.Diag
+
 import org.mitlware.hyperion3.immutable._
 import org.mitlware.hyperion3.immutable.perturb._
 import org.mitlware.hyperion3.immutable.accept._
@@ -13,8 +15,6 @@ import org.mitlware.hyperion3.immutable.isfinished._
 import org.mitlware.hyperion3.immutable.perturb.permutation.EvaluateDelta._
 
 import org.mitlware.solution.permutation.ArrayForm
-
-import org.mitlware.support.lang.Diag
 	  
 ///////////////////////////////////
 

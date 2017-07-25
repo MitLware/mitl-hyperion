@@ -3,13 +3,15 @@ package org.mitlware.hyperion3.immutable
 import cats.data.State
 import monocle.Lens
 
+import org.mitlware.Diag
+
 import org.mitlware.hyperion3.immutable._
 import org.mitlware.hyperion3.immutable.perturb._
 import org.mitlware.hyperion3.immutable.accept._
 import org.mitlware.hyperion3.immutable.isfinished._		
 
 import org.mitlware.support.lang.BadFormatException
-import org.mitlware.support.lang.Diag
+
 import org.mitlware.support.lang.UnsupportedFormatException
 import org.mitlware.support.math.Vec2
 

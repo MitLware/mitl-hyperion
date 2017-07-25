@@ -3,13 +3,15 @@ package org.mitlware.hyperion3.immutable
 import cats.data.State
 import monocle.Lens
 
+import org.mitlware.Diag
+
 import org.mitlware.hyperion3.immutable._
 import org.mitlware.hyperion3.immutable.perturb._
 import org.mitlware.hyperion3.immutable.accept._
 import org.mitlware.hyperion3.immutable.isfinished._		
 
 import org.mitlware.support.lang.BadFormatException
-import org.mitlware.support.lang.Diag
+
 import org.mitlware.support.lang.UnsupportedFormatException
 import org.mitlware.support.math.Vec2
 
@@ -175,7 +177,7 @@ class TestTSPHeuristics {
     val mean = relativeErrors.sum / relativeErrors.length.toDouble 
     val min = relativeErrors.min
     val max = relativeErrors.max    
-    org.mitlware.support.lang.Diag.println( s"R.E.s: min: ${min}, max: ${max}, mean: ${mean}" )
+    Diag.println( s"R.E.s: min: ${min}, max: ${max}, mean: ${mean}" )
   }
   
   /////////////////////////////////
@@ -213,7 +215,7 @@ class TestTSPHeuristics {
     val mean = relativeErrors.sum / relativeErrors.length.toDouble 
     val min = relativeErrors.min
     val max = relativeErrors.max    
-    org.mitlware.support.lang.Diag.println( s"R.E.s: min: ${min}, max: ${max}, mean: ${mean}" )
+    Diag.println( s"R.E.s: min: ${min}, max: ${max}, mean: ${mean}" )
   }  
 }
 

@@ -39,11 +39,9 @@ object RandomSwap {
     require( index1 >= 0 && index1 < x.size() )
     require( index2 >= 0 && index2 < x.size() )    
     
-    val result = x.toArray()      
-    val temp = result(index1)
-    result(index1) = result(index2) 
-    result(index2) = temp
-    new ArrayForm(result:_*)
+    val result = x.clone()
+    result.transpose(index1, index2)
+    result
   }
 }
 

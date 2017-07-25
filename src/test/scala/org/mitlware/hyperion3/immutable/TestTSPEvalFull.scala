@@ -3,13 +3,15 @@ package org.mitlware.hyperion3.immutable
 import cats.data.State
 import monocle.Lens
 
+import org.mitlware.Diag
+
 import org.mitlware.hyperion3.immutable._
 import org.mitlware.hyperion3.immutable.perturb._
 import org.mitlware.hyperion3.immutable.accept._
 import org.mitlware.hyperion3.immutable.isfinished._		
 
 import org.mitlware.support.lang.BadFormatException
-import org.mitlware.support.lang.Diag
+
 import org.mitlware.support.lang.UnsupportedFormatException
 import org.mitlware.support.math.Vec2
 
@@ -59,9 +61,12 @@ class TestTSPEvalFull {
 		
     case class MyEnv(iter: Iter, maxIter: MaxIter, rng: RNG, tourLength: Evaluate[MyEnv,ArrayForm,Double])
     
-    case class TourLength[Env](problem: TSP.TSPLibInstance) extends Evaluate[Env,ArrayForm,Double] {
+		def fitnessImpl(problem: TSP.TSPLibInstance)(x: ArrayForm): Double =
+		  TSP.tourLength(x,problem.getDistanceFn())
+    
+    case class TourLengthEval[Env](problem: TSP.TSPLibInstance) extends Evaluate[Env,ArrayForm,Double] {
       override def apply(x: ArrayForm): State[Env,Double] = State[Env,Double] { env =>
-        (env,TSP.tourLength(x,problem.getDistanceFn()))
+        (env,fitnessImpl(problem)(x))
       }
     }
 
@@ -70,6 +75,8 @@ class TestTSPEvalFull {
 	  val rngLens: Lens[MyEnv, RNG] = monocle.macros.GenLens[MyEnv] { _.rng }	  
 	  val tourLengthLens: Lens[MyEnv, Evaluate[MyEnv,ArrayForm,Double]] = monocle.macros.GenLens[MyEnv] { _.tourLength }
     
+	  ///////////////////////////////
+	  
     val perturb: Perturb[MyEnv,ArrayForm] = 
         org.mitlware.hyperion3.immutable.perturb.permutation.EvaluateFull.RandomSwap(rngLens)
         
@@ -78,12 +85,22 @@ class TestTSPEvalFull {
     val isFinished: Condition[MyEnv,ArrayForm] = IterGreaterThanMaxIter(iterLens,maxIterLens)
 		
 	  val search = IteratedPerturbation(iterLens,perturb,accept,isFinished)
-	  val initialEnv = MyEnv(Iter(0),MaxIter(maxIter),KnuthLCG64(seed), TourLength(tsp) )
-	  val (finalEnv,solution) = search( new ArrayForm( tsp.numCities() ) ).run( initialEnv ).value
+
+	  val initialEnv = MyEnv(Iter(0),MaxIter(maxIter),KnuthLCG64(seed), TourLengthEval(tsp) )
+	  
+	  val initialSol = TSPHeuristics.bestNearestNeighbour(tsp)
+	  
+    val startTime = System.currentTimeMillis()
+	  val (finalEnv,solution) = search( initialSol ).run( initialEnv ).value
+    val endTime = System.currentTimeMillis()
+    Diag.println( s"elapsed: ${(endTime - startTime)/1000.0}" )
 	  
 	  Diag.println( relativeError(solution) )
+	  Diag.println( fitnessImpl(tsp)(solution) )
 	  
-	  assertEquals( OptimalTourLength, TSP.tourLength(solution,tsp.getDistanceFn()), 0.0 )
+    val Threshold = 0.1
+    val re = relativeError(solution)
+    assertTrue( s"expected value <= $Threshold, found $re", re <= Threshold )
 	}
 }
 

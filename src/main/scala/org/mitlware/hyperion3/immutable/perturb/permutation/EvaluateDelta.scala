@@ -13,7 +13,7 @@ import org.mitlware.hyperion3.immutable.isfinished._
 
 import org.mitlware.solution.permutation.ArrayForm
 
-import org.mitlware.support.lang.Diag
+import org.mitlware.Diag
 
 ///////////////////////////////////
 

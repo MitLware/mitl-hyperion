@@ -1,7 +1,7 @@
 lazy val root = (project in file(".")).
   settings(
     name := "hyperion",
-    version := "3.4.1",
+    version := "3.4.2",
     scalaVersion := "2.12.0"
   )
 
