@@ -20,20 +20,15 @@ If you want to use an IDE rather than running everything from the command line, 
 
 Once you have this repository downloaded, you can either work directly from the terminal, or using and an IDE. These instructions present how to run the library using IntelliJ and Eclipse.
 
-### IntelliJ
+#### IntelliJ
 
-Before , make sure you have the Scala plugin [downloaded and enabled](https://www.jetbrains.com/help/idea/enabling-and-disabling-plugins.html).
+Before proceding, make sure you have the Scala plugin [downloaded and enabled](https://www.jetbrains.com/help/idea/enabling-and-disabling-plugins.html).
 
-Select **Create New Project** on the Welcome screen, or select **File | New | Project**. 
+Select **Import Project** on the Welcome screen, or select **File | Open** and specify project location.
 
-Choose **Scala** -> **SBT** as the project type and click **Next**.
-
-Specify project and module location settings.
 Depending on your operating system, a **Use auto-import** opion might apper. If it does, check the box to allow auto-import. Otherwise, you'll have to refresh the IDE every time you edit sbt build - related files.
 
-You can alternatively import an existing sbt project, if you already ran sbt on the source files.
-
-### Scala IDE for Eclipse
+#### Scala IDE for Eclipse
 
 Once you download [Scala IDE for eclipse](http://scala-ide.org/download/sdk.html) and have sbt installed, you should be able to run ```sbt eclipse``` in the command line, in the project's root directory (.../mitlproblems). The output of the command should look similar to this:
 
@@ -57,9 +52,10 @@ Tests can be found in the [mitl-solutions/src/test/java/org/mitlware/problem](ht
 You can run all the tests at once by running ```sbt``` in the terminal, and then typing ```test```, or a particular test with ```sbt``` > ```testOnly *NameOfTestClass```.
 
 ### IntelliJ
+Build project by right-clicking on project folder and choosing **Build module 'root'** or going to **Build | Build Project**. Right click on project folder and choose **Run 'All Tests'**.
 
 ### Eclipse
-Run tests by right-clicking on the ```src/tests/java``` package or a chosen test class and selecting **Run As...** > **JUnit test**. If you choose to run tests using a custom Run Configuration, make sure to use JUnit **4** - the tests won't run with JUnit 3, which might be set as default.
+Run tests by right-clicking on the ```src/tests/java``` package or a chosen test class and selecting **Run As...** > **JUnit Test**. If you choose to run tests using a custom Run Configuration, make sure to use JUnit **4** - the tests won't run with JUnit 3, which might be set as default.
 
 ## Built With
 
