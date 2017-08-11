@@ -107,7 +107,13 @@ trait Recombine2[Env,Sol] {
 }
 
 ///////////////////////////////////
-
+  
+trait Merge[Env,Sol] {
+  def apply(a: List[Sol], b: List[Sol]): State[Env,List[Sol]]
+}
+  
+///////////////////////////////////
+  
 } // package object immutable {
 
 // End ///////////////////////////////////////////////////////////////
