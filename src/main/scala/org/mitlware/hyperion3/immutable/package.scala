@@ -1,7 +1,13 @@
 package org.mitlware.hyperion3
 
-import cats.data.State
-import monocle._
+import cats._
+import cats.data._
+import cats.implicits._
+
+import monocle.Lens
+//import scalaz.State
+//import scalaz.Lens
+//import scalaz.Semigroup
 
 ///////////////////////////////////
 
@@ -9,7 +15,10 @@ package object immutable {
   
 ///////////////////////////////////
   
-case class Iter(asLong: Long) 
+case class Iter(asLong: Long) {
+  def inc = Iter(asLong + 1)  
+}
+
 case class MaxIter(asLong: Long)
 
 case class Temperature(asDouble: Double) {
@@ -26,74 +35,75 @@ case class MutationStrength(asDouble: Double) {
 
 ///////////////////////////////////
 
-trait Perturb[Env,Sol] {
-  // def apply(incumbent: Sol): State[Env,Delta[Sol]]
-  def apply(incumbent: Sol): State[Env,Sol]
-}
-
-///////////////////////////////////
-
-trait Accept[Env,Sol]  {
-  def apply(incumbent: Sol,incoming: Sol): State[Env,Sol]
-}
-
-///////////////////////////////////
-
 trait Condition[Env,Arg] {
   def apply(arg: Arg): State[Env,Boolean]
 }
 
 ///////////////////////////////////
 
-trait Evaluate[Env,Sol,Value] {
-  def apply(incumbent: Sol): State[Env,Value]
+object IsFinished {
+
+  case class IterGreaterThanMaxIter[Env,Sol](
+    iter: Lens[Env,Iter],
+    maxIter: Lens[Env,MaxIter]) extends Condition[Env,Sol] {
+  
+    def apply(incumbent: Sol): State[Env,Boolean] = State[Env,Boolean] { env =>
+      (env, iter.get(env).asLong > maxIter.get(env).asLong )
+    }
+  }
+  
 }
 
 ///////////////////////////////////
 
-//trait Delta[T] {
-//  def apply(incumbent: T): T  
-//}
+trait Order[Env,Entity] {
+  def apply(a: Entity,b: Entity): State[Env,Entity]
+  
+ def reduce[A, B, F[_]](fa: F[A])(f: A => B)(
+    implicit FF: Traverse[F], BB: Monoid[B]): B = {
+      val x = fa traverseU { (a: A) => Const((f(a))) }
+      x.getConst
+  }
+
+//  def compare(t: Entity, bestLens: Lens[Env,Entity]) : State[Env,Entity] = State { s =>
+//    val b = s.getBestSoFar
+//    val ord = s.getOrder
+//    val better = ord.better(t, b)
+//    (s.setBestSoFar(better),better)
+//  }
+  
+//  def zz: Unit = {
+//    val l = List.empty[Entity]
+//    implicit val orderMonoid: Monoid[Entity] = ???
+//    val xx = reduce( l ) { x => x }
+//  }
 //
-//case class NoDelta[T](incoming: T) extends Delta[T] {
-//  def apply(incumbent: T): T = incoming  
-//}
-
-trait Delta[Sol,Value] {
-  def apply(base: Sol): (Sol,Value)    
+//  def bestSS(l: List[Char]): State[Env,Int] = {
+//    implicit val orderMonoid: Monoid[Int] = ???    
+//    for {
+//      result <- reduce( l ) { c: Char => c.toInt }
+//    } yield result      
+//  }
+  
+//  def best(l: List[Entity]): State[Env,Option[Entity]] = {
+//    implicit val orderMonoid = ???    
+//    for {
+//      result <- reduce( List('a', 'b', 'c') ) { c: Char => c.toInt };
+//      ???
+//    } yield result      
+//  }
 }
 
 ///////////////////////////////////
 
-case class DeltaEvaluated[Env,Sol,Value](
-  baseSol: Sol,
-  baseValue: Value,
-  deltas: List[Delta[Sol,Value]])(implicit ev: cats.Semigroup[Value]) {
-  
-  // type DeltaType = Delta
-  
-  lazy val (updatedSol,updatedValue) = DeltaEvaluated.applyDeltas(baseSol,baseValue,deltas)
-  
-  def update(newDeltas: List[Delta[Sol,Value]]): DeltaEvaluated[Env,Sol,Value] = 
-    DeltaEvaluated(updatedSol,updatedValue,newDeltas)      
+trait Create[Env,Entity] {
+  def apply: State[Env,Entity]
 }
 
 ///////////////////////////////////
 
-object DeltaEvaluated {
-
-  def applyDeltas[Sol,Value](base: Sol, baseValue: Value, deltas: List[Delta[Sol,Value]])(
-    implicit ev: cats.Semigroup[Value]): (Sol,Value) = 
-      deltas.foldLeft( (base,baseValue) ) { case ((accSol,accValue),delta) => 
-        val (newSol,deltaValue) = delta.apply( accSol )
-        (newSol,ev.combine(accValue,deltaValue))
-      }
-}
-
-///////////////////////////////////
-
-trait EvaluateDelta[Env,Sol,Value] extends Evaluate[Env,DeltaEvaluated[Env,Sol,Value],Value] {
-  def apply(incumbent: DeltaEvaluated[Env,Sol,Value]): State[Env,Value]
+trait Recombine2[Env,Sol] {
+  def apply(a: Sol, b: Sol): State[Env,Sol]
 }
 
 ///////////////////////////////////

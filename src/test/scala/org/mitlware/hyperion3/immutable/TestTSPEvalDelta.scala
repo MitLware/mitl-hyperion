@@ -1,15 +1,17 @@
 package org.mitlware.hyperion3.immutable
 
+import org.mitlware.hyperion3.immutable._
+
 import cats.data.State
 import cats.implicits._
 import monocle.Lens
+//import scalaz.State
+//import scalaz.Lens
+//import scalaz.Semigroup
 
 import org.mitlware.Diag
 
 import org.mitlware.hyperion3.immutable._
-import org.mitlware.hyperion3.immutable.perturb._
-import org.mitlware.hyperion3.immutable.accept._
-import org.mitlware.hyperion3.immutable.isfinished._		
 
 import org.mitlware.support.lang.BadFormatException
 
@@ -92,9 +94,9 @@ class TestTSPDeltaEval {
        RandomSwap( rngLens, (index1, index2 ) => RandomSwapDeltaTSP(tsp, index1, index2))
       
     val accept: Accept[MyEnv,MyArrayFormDelta] = AcceptImprovingOrEqual(isMinimizing=true, scala.math.Ordering.Double, fitnessLens)
-    val isFinished: Condition[MyEnv,MyArrayFormDelta] = IterGreaterThanMaxIter(iterLens,maxIterLens)
+    val isFinished: Condition[MyEnv,MyArrayFormDelta] = IsFinished.IterGreaterThanMaxIter(iterLens,maxIterLens)
 		
-	  val search = IteratedPerturbation(iterLens,perturb,accept,isFinished)
+	  val search = IteratedPerturbReturnLast(iterLens,perturb,accept,isFinished)
 	  val fitness = TourLengthEval[MyEnv](tsp)
     val fitnessDelta = TourLengthDeltaEval[MyEnv](tsp)	  
 	  

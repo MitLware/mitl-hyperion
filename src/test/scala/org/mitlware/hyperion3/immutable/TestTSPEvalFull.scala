@@ -1,14 +1,17 @@
 package org.mitlware.hyperion3.immutable
 
-import cats.data.State
+import cats._
+import cats.data._
+import cats.implicits._
+
 import monocle.Lens
+
+//import scalaz.State
+//import scalaz.Lens
 
 import org.mitlware.Diag
 
 import org.mitlware.hyperion3.immutable._
-import org.mitlware.hyperion3.immutable.perturb._
-import org.mitlware.hyperion3.immutable.accept._
-import org.mitlware.hyperion3.immutable.isfinished._		
 
 import org.mitlware.support.lang.BadFormatException
 
@@ -71,10 +74,20 @@ class TestTSPEvalFull {
     }
 
   	val iterLens: Lens[MyEnv, Iter] = monocle.macros.GenLens[MyEnv] { _.iter }
-	  val maxIterLens: Lens[MyEnv, MaxIter] = monocle.macros.GenLens[MyEnv] { _.maxIter }
-	  val rngLens: Lens[MyEnv, RNG] = monocle.macros.GenLens[MyEnv] { _.rng }	  
-	  val tourLengthLens: Lens[MyEnv, Evaluate[MyEnv,ArrayForm,Double]] = monocle.macros.GenLens[MyEnv] { _.tourLength }
-    
+  	  // Lens.lensu((x, newValue) => x.copy(iter = newValue), _.iter)
+  	  
+	  val maxIterLens: Lens[MyEnv, MaxIter] = 
+	    monocle.macros.GenLens[MyEnv] { _.maxIter }
+  	  // Lens.lensu((x, newValue) => x.copy(maxIter = newValue), _.maxIter)
+  	  
+	  val rngLens: Lens[MyEnv, RNG] = 
+	    monocle.macros.GenLens[MyEnv] { _.rng }
+  	  // Lens.lensu((x, newValue) => x.copy(rng = newValue), _.rng)
+  	  
+	  val tourLengthLens: Lens[MyEnv, Evaluate[MyEnv,ArrayForm,Double]] = 
+	    monocle.macros.GenLens[MyEnv] { _.tourLength }
+  	  // Lens.lensu((x, newValue) => x.copy(tourLength = newValue), _.tourLength)
+  	  
 	  ///////////////////////////////
 	  
     val perturb: Perturb[MyEnv,ArrayForm] = 
@@ -82,9 +95,9 @@ class TestTSPEvalFull {
         
     val accept: Accept[MyEnv,ArrayForm] = AcceptImprovingOrEqual(isMinimizing=true, 
         scala.math.Ordering.Double, tourLengthLens)
-    val isFinished: Condition[MyEnv,ArrayForm] = IterGreaterThanMaxIter(iterLens,maxIterLens)
+    val isFinished: Condition[MyEnv,ArrayForm] = IsFinished.IterGreaterThanMaxIter(iterLens,maxIterLens)
 		
-	  val search = IteratedPerturbation(iterLens,perturb,accept,isFinished)
+	  val search = IteratedPerturbReturnLast(iterLens,perturb,accept,isFinished)
 
 	  val initialEnv = MyEnv(Iter(0),MaxIter(maxIter),KnuthLCG64(seed), TourLengthEval(tsp) )
 	  

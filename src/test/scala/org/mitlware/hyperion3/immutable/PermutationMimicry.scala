@@ -1,17 +1,17 @@
 package org.mitlware.hyperion3.immutable
 
-import cats.data.State
-import cats.Semigroup
+import cats._
+import cats.data._
 import cats.implicits._
-
 import monocle.Lens
+
+//import scalaz.State
+//import scalaz.Lens
+//import scalaz.Semigroup
 
 import org.mitlware.Diag
 
 import org.mitlware.hyperion3.immutable._
-import org.mitlware.hyperion3.immutable.perturb._
-import org.mitlware.hyperion3.immutable.accept._
-import org.mitlware.hyperion3.immutable.isfinished._		
 import org.mitlware.hyperion3.immutable.perturb.permutation.EvaluateDelta._
 
 import org.mitlware.solution.permutation.ArrayForm
@@ -85,9 +85,9 @@ object PermutationMimicry {
       (index1,index2) => HammingSwapDelta(target,index1,index2) )
     
     val accept: Accept[MyEnv,MyArrayFormDelta] = AcceptImprovingOrEqual(isMinimizing=true, scala.math.Ordering.Int, fitnessLens)
-    val isFinished: Condition[MyEnv,MyArrayFormDelta] = IterGreaterThanMaxIter(iterLens,maxIterLens)
+    val isFinished: Condition[MyEnv,MyArrayFormDelta] = IsFinished.IterGreaterThanMaxIter(iterLens,maxIterLens)
 		
-	  val search = IteratedPerturbation(iterLens,perturb,accept,isFinished)
+	  val search = IteratedPerturbReturnLast(iterLens,perturb,accept,isFinished)
 	  val fitness = HammingEval[MyEnv](target)
 	  val fitnessDelta: EvaluateDelta[MyEnv,ArrayForm,Int] = HammingDeltaEval[MyEnv](target)	  
 	  
@@ -121,6 +121,6 @@ object PermutationMimicry {
 ///////////////////////////////////
   
 } // object PermutationMimicry {
-  
+
 // End ///////////////////////////////////////////////////////////////
 

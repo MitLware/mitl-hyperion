@@ -3,6 +3,10 @@ package org.mitlware.hyperion3.immutable.perturb.permutation
 import cats.data.State
 import monocle.Lens
 
+//import scalaz.State
+//import scalaz.Lens
+//import scalaz.Semigroup
+
 import org.mitlware.hyperion3.immutable._
 import org.mitlware.solution.permutation.ArrayForm
 

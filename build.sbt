@@ -25,7 +25,7 @@ libraryDependencies += "junit" % "junit" % "4.12"
 // https://mvnrepository.com/artifact/org.spire-math/spire_2.11
 // libraryDependencies += "org.spire-math" % "spire_2.12" % "0.13.0"
 
-libraryDependencies += "com.novocode" % "junit-interface" % "0.10" % "test"
+// libraryDependencies += "com.novocode" % "junit-interface" % "0.10" % "test"
 
 libraryDependencies += "org.typelevel" %% "cats" % "0.9.0"
 
@@ -38,6 +38,8 @@ libraryDependencies ++= Seq(
 )
 
 libraryDependencies += "org.scalaz" %% "scalaz-core" % "7.2.14"
+
+// libraryDependencies += "com.nicta" %% "rng" % "1.3.0"
 
 
 

@@ -3,13 +3,12 @@ package org.mitlware.hyperion3.immutable.perturb.permutation
 import cats.data.State
 import cats.Semigroup
 import cats.implicits._
-
 import monocle.Lens
+//import scalaz.State
+//import scalaz.Lens
+//import scalaz.Semigroup
 
 import org.mitlware.hyperion3.immutable._
-import org.mitlware.hyperion3.immutable.perturb._
-import org.mitlware.hyperion3.immutable.accept._
-import org.mitlware.hyperion3.immutable.isfinished._		
 
 import org.mitlware.solution.permutation.ArrayForm
 
