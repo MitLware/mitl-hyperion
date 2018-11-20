@@ -25,12 +25,7 @@ libraryDependencies += "junit" % "junit" % "4.12"
 // https://mvnrepository.com/artifact/org.spire-math/spire_2.11
 // libraryDependencies += "org.spire-math" % "spire_2.12" % "0.13.0"
 
-<<<<<<< HEAD
-// libraryDependencies += "com.novocode" % "junit-interface" % "0.10" % "test"
-=======
 libraryDependencies += "com.novocode" % "junit-interface" % "0.11" % "test "
->>>>>>> 8984ca8d4d4e618604773c716ab2fdff5c2c4113
-
 libraryDependencies += "org.typelevel" %% "cats" % "0.9.0"
 
 val monocleVersion = "1.4.0"
